@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width = device-width, initial-scale = 1">
+
+<title>Bootstrap CreditCalc</title>
+
+<link rel="stylesheet" type="text/css" href="https://bootswatch.com/slate/bootstrap.min.css">
+
+<body>
+
+  <div id="mainpage" class="container">
+
+    <div class="page-header">
+      <h1 class="text-center">CreditCalc</h1>
+    </div>
+
+    <div class="row">
+
+      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <h4 class="text-center">Mortgage amount</h4>
+            <input id="mortgageInput" type="number" class="form-control">
+          </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <h4 class="text-center">Interest rate</h4>
+            <input id="interestInput" type="number" class="form-control">
+          </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <h4 class="text-center">Montly payment</h4>
+            <input id="paymentInput" type="number" class="form-control">
+          </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">
+            <p></p>
+            <button type="button" class="btn btn-default btn-lg" onclick="myFunction()">Calculate</button>
+            <p id="info"></p>
+          </div>
+
+    </div>
+
+    <div id="alertbox" class="alert alert-dismissible alert-danger">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Oh snap!</strong> Some of the values are invalid.
+  </div>
+
+  </div>
+
+  <div id="ayy" style="padding-top:50px;">
+    <div id="navbar">
+      <nav class="navbar navbar-default navbar-fixed-top">
+
+          <div class="navbar-header">
+            <a class="navbar-brand" href="javascript:goBack()">Back</a>
+          </div>
+
+      </nav>
+  <div id="well" class="well well-sm">
+
+  </div>
+    </div>
+    <div id="listdiv">
+    </div>
+  </div>
+
+  <script>
+
+    var mortgageAmount;
+    var interest;
+    var payment;
+    var months = 0;
+    var array = [];
+
+    var shit = document.getElementById("ayy");
+    shit.style.position = 'absolute';
+    shit.style.left = '5px';
+    //shit.style.top = '5px';
+    shit.style.display = 'none';
+
+    document.getElementById("alertbox").style.display = 'none';
+
+    function myFunction() {
+      mortgageAmount = document.getElementById("mortgageInput").value;
+      interest = document.getElementById("interestInput").value;
+      payment = document.getElementById("paymentInput").value;
+
+      if (mortgageAmount <= 0 || interest <=0 || payment <=0) {
+        //alert("Some of the values are invalid, check your input.");
+        document.getElementById("alertbox").style.display = 'block';
+      } else {
+
+      calculateCredit(mortgageAmount, interest, payment);
+      document.getElementById("mainpage").style.display = 'none';
+      moveShit();
+    }
+    }
+
+    function moveShit() {
+      shit.style.display = 'block';
+      //shit.style.position = "absolute";
+      //shit.style.left = parseInt(shit.style.left) + 5 + 'px';
+      //shit.style.top = parseInt(shit.style.top) + 10 + 'px';
+      //var animate = setTimeout(moveShit, 16.6); //it works!
+    }
+
+    function calculateCredit(mortgageAmount, interest, payment) {
+
+      array = [];
+      document.getElementById("listdiv").innerHTML="";
+
+      while (parseFloat(mortgageAmount) > parseFloat(payment)) {
+        var tilgung = payment - (mortgageAmount*(interest/100))/12;
+        mortgageAmount = mortgageAmount - tilgung;
+        months++;
+        array.push(months + ". Rest: " + mortgageAmount.toFixed(2) + "€ Tilgung: " + tilgung.toFixed(2) + "€ Zinsen: " + (payment - tilgung).toFixed(2) + "€");
+        console.log(months + ". Rest: " + mortgageAmount + " Tilgung: " + tilgung + " Zinsen: " + (payment - tilgung));
+      }
+
+      var kreditdauerM = months+1;
+      var kreditdauerJ = kreditdauerM/12;
+      array.push(kreditdauerM + ". Letzter Monat mit Restbetrag von " + mortgageAmount.toFixed(2) + "€ ausbezahlt");
+      console.log(kreditdauerM + ". Letzter Monat mit Restbetrag von " + mortgageAmount + " ausbezahlt");
+      console.log("Kreditdauer: " + kreditdauerM + " Monate oder ca. " + kreditdauerJ + " Jahre");
+
+      months = 0;
+
+      document.getElementById("listdiv").appendChild(makeUL(array));
+      document.getElementById("well").innerHTML="Kreditdauer: " + kreditdauerM + " Monate oder " + kreditdauerJ.toFixed(1) + " Jahre";
+
+    }
+
+    function makeUL(array) {
+      var list = document.createElement('ul');
+      list.style.cssText = 'list-style-type: none; padding: 0; margin: 0; font-size: 4vw;';
+
+      for (var i = 0; i < array.length; i++) {
+        var item = document.createElement('li');
+        item.appendChild(document.createTextNode(array[i]));
+        list.appendChild(item);
+      }
+
+      return list;
+
+    }
+
+    function goBack() {
+      document.getElementById("ayy").style.display = 'none';
+      document.getElementById("mainpage").style.display = 'block';
+      //alert("we need to go back!");
+    }
+
+  </script>
+
+  <script   src="https://code.jquery.com/jquery-3.2.1.js"   integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="   crossorigin="anonymous"></script>
+  <script src="js/bootstrap.min.js"></script>
+</body>
+
+</head>
+</html>
